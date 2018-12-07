@@ -34,11 +34,10 @@ function shuffle_assoc($list) {
 } 
 
 while ( sizeof($prepared_arr) !== 1 ) {
-
+    
     // echo "IN WHILE size of: " . sizeof($prepared_arr) . ".\n";
-
+    
     $remove_these = array();
-    $fabric = array();
 
     // echo "Prepared arr index 0 BEFORE shuffle " . $prepared_arr[0]['id'] . ".\n";
     shuffle( $prepared_arr );
@@ -46,6 +45,7 @@ while ( sizeof($prepared_arr) !== 1 ) {
 
 
     foreach ( $prepared_arr as $item ) {
+        // echo $item['id'] . "\n";
         $overlap = false;
         for ( $width = 0; $width < $item['size_x']; $width++ ) {
             for ( $height = 0; $height < $item['size_y']; $height++ ) {
@@ -55,11 +55,15 @@ while ( sizeof($prepared_arr) !== 1 ) {
     
                 // Nothing exists in this square, empty cell
                 if ( !isset( $fabric [ $x_distance ][ $y_distance ] ) ) {
-                    echo "Found empty cell, printing " . $item['id'] . " to it.\n";
+                    // echo "Found empty cell, printing " . $item['id'] . " to it.\n";
+
+                    // echo "Contents of cell is " . $fabric [ $x_distance ][ $y_distance ] . ".\n";
+
                     $fabric[ $x_distance ][ $y_distance ] = $item['id'];
-                // There is something else in that cell, intersection detected.
-                } else {
-                    // echo "Overlap at " . $x_distance . "," . $y_distance . ".\n";
+                } else if ( $fabric[ $x_distance ][ $y_distance ] === $item['id'] ) {
+                    // Do nothing..
+                } else { // There is something else in that cell, intersection detected.
+                    echo "Overlap at " . $x_distance . "," . $y_distance . ".\n";
                     $overlap = true;
                     $fabric[ $x_distance ][ $y_distance ] = 'X';
                 }
@@ -71,21 +75,21 @@ while ( sizeof($prepared_arr) !== 1 ) {
         }
     }
 
-    // echo "Remove these length " . sizeof( $remove_these ) . ".\n";
+    echo "Remove these size: " . sizeof($remove_these) . ".\n";
 
     foreach ( $remove_these as $r_item ) {
         foreach ( $prepared_arr as $key => $item ) {
             if ( $r_item['id'] == $item['id'] ) {
-                echo "Unsetting " . $item['id'] . ".\n";
+                // echo "Unsetting " . $item['id'] . ".\n";
+                // echo "Key: " . $key . ".\n";
                 unset( $prepared_arr[$key] );
             }
         }
-    }
-    
+    }    
 }
 
 echo "Prepared array length: " . sizeof($prepared_arr) . ".\n";
-echo "Index of first element " . $prepared_arr[0]['id'] . ".\n";
+echo "Index of first element " . json_encode( $prepared_arr ) . ".\n";
 
 
 
